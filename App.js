@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -7,48 +7,44 @@ import {
   TextInput,
   ToastAndroid,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import Task from "./components/Task";
+import { Entypo } from "@expo/vector-icons";
 
 export default function App() {
-  const [task, setTask] = useState([]);
-  const [taskItems, setTaskItems] = useState([]);
-
-  //get the current time
+  const [tasks, setTasks] = useState([]);
+  const [inputValue, setInputValue] = useState("");
 
   const handleAddTask = () => {
-    // keyboard.dismiss() tna77i l keyboard ba3d ma to9ros add
-    Keyboard.dismiss();
-    setTaskItems([...taskItems, task]);
-    setTask(null);
-    // ...taskItems is a spread operator that copies the taskItems array
-    //   if (task.trim().length > 0) {
-    //     setTaskItems([...taskItems, task]);
-    //     setTask(null);
-    //   } else ToastAndroid.show("Please enter a task", ToastAndroid.SHORT);
-  };
-
-  const taskCompleted = (index) => {
-    let itemsCopy = [...taskItems];
-    // splice() tfasa5 item ml array
-    itemsCopy.splice(index, 1);
-    setTaskItems(itemsCopy);
+    if (inputValue) {
+      setTasks((prevState) => [
+        { date: Date.now(), text: inputValue },
+        ...prevState,
+      ]);
+      setInputValue("");
+      // keyboard.dismiss() tna77i l keyboard ba3d ma to9ros add
+      Keyboard.dismiss();
+    } else {
+      Platform.OS === "android"
+        ? ToastAndroid.show("Please enter a task", ToastAndroid.SHORT)
+        : Alert.alert("Error", "Please enter a task");
+    }
   };
 
   return (
-    <View style={styles.container}>
+    <>
       {/* todays tasks (title) */}
       <View style={styles.taskWrapper}>
-        <Text style={styles.taskTitle}>Taday's tasks</Text>
+        <Text style={styles.taskTitle}>Today's tasks</Text>
 
         <View style={styles.items}></View>
         {/* tasks */}
-        {/* key y5alli react ya3rf anaho item inzaad, tfass5 wela tbadel */}
-        {taskItems.map((item, index) => {
+        {tasks.map((item, index) => {
           return (
-            <TouchableOpacity key={index} onPress={() => taskCompleted(index)}>
-              <Task text={item} />
+            <TouchableOpacity>
+              <Task item={item} />
             </TouchableOpacity>
           );
         })}
@@ -62,17 +58,19 @@ export default function App() {
         <TextInput
           style={styles.input}
           placeholder={"Write a task"}
-          value={task}
-          onChangeText={(text) => setTask(text)}
+          value={inputValue}
+          onChangeText={(text) => setInputValue(text)}
         />
 
         <TouchableOpacity onPress={() => handleAddTask()}>
           <View style={styles.addWrapper}>
-            <Text style={styles.addText}>+</Text>
+            <TouchableOpacity style={styles.icons}>
+              <Entypo name="add-to-list" size={20} color="black" />
+            </TouchableOpacity>
           </View>
         </TouchableOpacity>
       </KeyboardAvoidingView>
-    </View>
+    </>
   );
 }
 
@@ -119,5 +117,7 @@ const styles = StyleSheet.create({
     borderColor: "#C0C0C0",
     borderWidth: 1,
   },
-  addText: {},
+  icons: {
+    opacity: 0.6,
+  },
 });
