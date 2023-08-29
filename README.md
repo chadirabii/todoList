@@ -14,25 +14,25 @@ Discover the simplicity of managing tasks with our Todo App. Crafted using React
 Clone the project
 
 ```bash
-  git clone https://github.com/chadirabii/todoList
+  git clone https://github.com/chadirabii/counter
 ```
 
 Go to the project directory
 
 ```bash
-  cd todolist
+  cd counter
 ```
 
 Install dependencies
 
 ```bash
-  yarn
+  npm i
 ```
 
 Start the server
 
 ```bash
-  yarn run dev
+  npm start
 ```
 
 ## Author : Chadi Rabii
